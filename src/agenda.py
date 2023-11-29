@@ -73,15 +73,47 @@ def agenda(contactos: list):
     """
     #TODO: Crear un bucle para mostrar el menú y ejecutar las funciones necesarias según la opción seleccionada...
 
-    while opcion != 7:
+    while opcion != 8:
         mostrar_menu()
         opcion = pedir_opcion()
 
-        #TODO: Se valorará que utilices la diferencia simétrica de conjuntos para comprobar que la opción es un número entero del 1 al 6
-        if opcion in ?:
+        #TODO: Se valorará que utilices la diferencia simétrica de conjuntos para comprobar que la opción es un número entero del 1 al 8
+        if opcion in OPCIONES_MENU^8 :
+            if opcion == 1:
+                nuevo_contacto(contactos)
+            elif opcion == 2:
+                modificar_contacto(contactos)
+            elif opcion == 3:
+                eliminar_contacto()
+            elif opcion == 4:
+                borrar_agenda()
+            elif opcion == 5:
+                cargar_contactos()
+            elif opcion == 6:
+                    
+            
 
-
-
+def mostrar_menu():
+    print("AGENDA\n"
+          "------\n"
+          "1. Nuevo contacto\n"
+          "2. Modificar contacto\n"
+          "3. Eliminar contacto\n"
+          "4. Vaciar agenda\n"
+          "5. Cargar agenda inicial\n"
+          "6. Mostrar contactos por criterio\n"
+          "7. Mostrar la agenda completa\n"
+          "8. Salir\n")
+def pedir_opcion():
+    try:
+        opcion = int(input(">> Seleccione una opción: "))
+        return opcion
+    except ValueError as e :
+        print(e,"No es un número")
+        opcion = None
+        return(opcion)
+    
+    
 def pulse_tecla_para_continuar():
     """ Muestra un mensaje y realiza una pausa hasta que se pulse una tecla
     """
@@ -95,8 +127,7 @@ def main():
     borrar_consola()
 
     #TODO: Asignar una estructura de datos vacía para trabajar con la agenda
-    contactos = ?
-
+    contactos = list()
     #TODO: Modificar la función cargar_contactos para que almacene todos los contactos del fichero en una lista con un diccionario por contacto (claves: nombre, apellido, email y telefonos)
     #TODO: Realizar una llamada a la función cargar_contacto con todo lo necesario para que funcione correctamente.
     cargar_contactos(?)
