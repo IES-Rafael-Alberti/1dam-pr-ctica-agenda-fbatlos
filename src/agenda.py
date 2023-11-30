@@ -55,11 +55,11 @@ def procesar_contacto(linea:str , contactos:list):
     linea = linea.strip().split(";")
     nombre = linea[0] 
     apellido = linea[1]
-    correo = linea[2]
+    email = linea[2]
     telefono = linea[3:]
     if telefono == []:
         telefono = "ninguno"
-    informacion_contactos ={'nombre':nombre , 'apellido':apellido , 'correo':correo , 'telefono':telefono}
+    informacion_contactos ={'nombre':nombre , 'apellido':apellido , 'correo':email , 'telefono':telefono}
     contactos.append(informacion_contactos)
     
 def mostrar_contactos(contactos : list):
@@ -70,14 +70,19 @@ def mostrar_contactos(contactos : list):
         print(f"Teléfonos: {i['telefono']}\n"
               "............................")
         
-
+def buscar_contacto(contactos , email):
+    for i in range (len(contactos)):
+                for contacto in contactos:
+                    if contacto.get("correo") == email:
+                        pos = i
+                        return pos
 def eliminar_contacto(contactos: list, email: str):
     """ Elimina un contacto de la agenda
     ...
     """
     try:
         #TODO: Crear función buscar_contacto para recuperar la posición de un contacto con un email determinado
-
+        pos = buscar_contacto(contactos , email)
         if pos != None:
             del contactos[pos]
             print("Se eliminó 1 contacto")
@@ -111,9 +116,9 @@ def agenda(contactos: list):
             elif opcion == 5:
                 cargar_contactos()
             elif opcion == 6:
-                mostrar_contactos()
+                buscar_contacto()
             elif opcion == 7:
-                mostrar_agenda()     
+                mostrar_contactos()     
             elif opcion == 8:
                 return None
 
@@ -140,60 +145,71 @@ def pedir_opcion():
     
 def agregar_contacto(contactos : list):
     nombre , apellido = pedir_nombre()
-    email = pedir_email()
-    telefono = pedir_telefono()
+    email = pedir_email(contactos)
+    telefono = validar_telefono()
+    informacion_contactos ={'nombre':nombre , 'apellido':apellido , 'correo':email , 'telefono':telefono}
+    contactos.append(informacion_contactos)
 
-def pedir_telefono():
+
+def validar_telefono():
     cont = None
     contador = 0
     telefonos = list()
     while cont == None:
         try:
             contador += 1
-            telefono = str(input(f"Dame tu teléfono nº {contador} => "))
-            if telefono == "":
+            input_tel = str(input(f"Dame tu teléfono nº {contador} => "))
+            if input_tel == "":
                 return telefonos
-            elif telefono.find("+") != -1:
-                if len(telefono) == 12:
-                    telefonos.append(telefono)
+            elif input_tel.find("+") != -1:
+                if len(input_tel) == 12:
+                    telefonos.append(input_tel)
                 else:
                     raise ValueError("El telefono es invalido")
-            elif telefono != 9:
+            elif input_tel != 9:
                 raise ValueError("El telefono es invalido")
-            telefonos.append(telefono)
+            telefonos.append(input_tel)
             cont = "Diego ponme un 15//2 plis"      
         except ValueError as e:
             print(e)
-    
-    
-def pedir_email():
+
+def pedir_email(contactos):
     cont = None
     while cont == None:
         try:
             email = input("Dime tu email => ")
-            if email.find("@" == -1):
-                raise ValueError ("Email incorrecto.")
-            elif email.find(".com") == -1 and email.find(".es") == -1:
-                raise ValueError ("Email no encontrado en dominio : .es o .com .")
-            elif len(email)<9:
-                raise ValueError ("El email no está completo.")
+            validar_email(email,contactos)
             cont = "Diego ponme un 15//2 plis"
             return email
         
         except ValueError as e:
             print(e)
-   
-    
+
+def validar_email(email : str,contactos): 
+    if email.find("@") == -1:
+            raise ValueError ("el email no es un correo válido.")
+    elif email.find(".com") == -1 and email.find(".es") == -1:
+        raise ValueError ("Email no encontrado en dominio : .es o .com .")
+    elif 0<len(email)<9:
+        raise ValueError ("El email no está completo.")
+    elif email == "":
+        raise ValueError ("el email no puede ser una cadena vacía")
+    elif email in contactos:
+        raise ValueError ("el email ya existe en la agenda")
+
+
+
+
 
 def pedir_nombre():
     cont = None
     while cont == None:
         try:
-            nombre = str(input("Dime tu nombre => "))
-            if nombre == "":
+            nombre = input("Dime tu nombre => ")
+            if nombre == "" or type(nombre)==int:
                 raise ValueError ("No se ha detectado nombre")
-            apellido = str(input("Dime tu apellido => "))
-            if  apellido == "":
+            apellido = (input("Dime tu apellido => "))
+            if  apellido == "" or type(apellido)==int:
                 raise ValueError ("No se ha detectado apellido")
             cont = "Diego ponme un 15//2 plis"
             return nombre , apellido
@@ -213,7 +229,8 @@ def main():
     """ Función principal del programa
     """
     borrar_consola()
-
+    email = "rciruelo@gmail.com"
+   
     #TODO: Asignar una estructura de datos vacía para trabajar con la agenda
     contactos = list()
     #TODO: Modificar la función cargar_contactos para que almacene todos los contactos del fichero en una lista con un diccionario por contacto (claves: nombre, apellido, email y telefonos)
@@ -237,7 +254,7 @@ def main():
     borrar_consola()
 
     #TODO: Realizar una llamada a la función eliminar_contacto con todo lo necesario para que funcione correctamente, eliminando el contacto con el email rciruelo@gmail.com
-    eliminar_contacto()
+    eliminar_contacto(contactos , email)
 
     pulse_tecla_para_continuar()
     borrar_consola()
@@ -259,7 +276,7 @@ def main():
     # ** resto de contactos **
     #
     #TODO: Realizar una llamada a la función mostrar_contactos con todo lo necesario para que funcione correctamente.
-    mostrar_contactos()
+    mostrar_contactos(contactos)
 
     pulse_tecla_para_continuar()
     borrar_consola()
