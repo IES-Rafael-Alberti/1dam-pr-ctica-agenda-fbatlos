@@ -47,17 +47,29 @@ def cargar_contactos(contactos: list):
 
     with open(RUTA_FICHERO, 'r') as fichero:
         for linea in fichero:
-            contactos = procesar_contacto(linea)
-            print(contactos)
-            
-
-def procesar_contacto(linea:str):
+            procesar_contacto(linea , contactos)     
+    return contactos
+    
+def procesar_contacto(linea:str , contactos:list):
+    informacion_contactos = dict()
     linea = linea.strip().split(";")
-    nombre_completo = f"Nombre : {linea[0]} {linea[1]}"
-    correo = f"Correo : {linea[2]}"
-    telefono = f"Telefonos : {linea[3:]}"
-    return nombre_completo , correo , telefono
-
+    nombre = linea[0] 
+    apellido = linea[1]
+    correo = linea[2]
+    telefono = linea[3:]
+    if telefono == []:
+        telefono = "ninguno"
+    informacion_contactos ={'nombre':nombre , 'apellido':apellido , 'correo':correo , 'telefono':telefono}
+    contactos.append(informacion_contactos)
+    
+def mostrar_contactos(contactos : list):
+    print(f"AGENDA {len(contactos)}\n"
+          "-------------------")
+    for i in contactos:
+        print(f"Nombre : {i['nombre']} {i['apellido']}    ({i['correo']})",end="\n")
+        print(f"Teléfonos: {i['telefono']}\n"
+              "............................")
+        
 
 def eliminar_contacto(contactos: list, email: str):
     """ Elimina un contacto de la agenda
@@ -127,23 +139,69 @@ def pedir_opcion():
         return(opcion)
     
 def agregar_contacto(contactos : list):
+    nombre , apellido = pedir_nombre()
+    email = pedir_email()
+    telefono = pedir_telefono()
+
+def pedir_telefono():
     cont = None
-    while   cont == None:
+    contador = 0
+    telefonos = list()
+    while cont == None:
         try:
-            conjunto = list()
-            nombre = pedir_nombre()
-            email = pedir_email()
-            telefono = int (input("Dame tu teléfono : +34 "))
-            if len(telefono)!= 9 :
-                email
-            while telefono != " ":
-                email
-            contactos.append(conjunto)
-            cont=1
+            contador += 1
+            telefono = str(input(f"Dame tu teléfono nº {contador} => "))
+            if telefono == "":
+                return telefonos
+            elif telefono.find("+") != -1:
+                if len(telefono) == 12:
+                    telefonos.append(telefono)
+                else:
+                    raise ValueError("El telefono es invalido")
+            elif telefono != 9:
+                raise ValueError("El telefono es invalido")
+            telefonos.append(telefono)
+            cont = "Diego ponme un 15//2 plis"      
         except ValueError as e:
-            print(e,"Teléfono incorrecto")
+            print(e)
+    
+    
+def pedir_email():
+    cont = None
+    while cont == None:
+        try:
+            email = input("Dime tu email => ")
+            if email.find("@" == -1):
+                raise ValueError ("Email incorrecto.")
+            elif email.find(".com") == -1 and email.find(".es") == -1:
+                raise ValueError ("Email no encontrado en dominio : .es o .com .")
+            elif len(email)<9:
+                raise ValueError ("El email no está completo.")
+            cont = "Diego ponme un 15//2 plis"
+            return email
+        
+        except ValueError as e:
+            print(e)
+   
+    
 
-
+def pedir_nombre():
+    cont = None
+    while cont == None:
+        try:
+            nombre = str(input("Dime tu nombre => "))
+            if nombre == "":
+                raise ValueError ("No se ha detectado nombre")
+            apellido = str(input("Dime tu apellido => "))
+            if  apellido == "":
+                raise ValueError ("No se ha detectado apellido")
+            cont = "Diego ponme un 15//2 plis"
+            return nombre , apellido
+        except ValueError as e:
+            print(e)
+    
+    
+    
 def pulse_tecla_para_continuar():
     """ Muestra un mensaje y realiza una pausa hasta que se pulse una tecla
     """
@@ -160,8 +218,8 @@ def main():
     contactos = list()
     #TODO: Modificar la función cargar_contactos para que almacene todos los contactos del fichero en una lista con un diccionario por contacto (claves: nombre, apellido, email y telefonos)
     #TODO: Realizar una llamada a la función cargar_contacto con todo lo necesario para que funcione correctamente.
-    cargar_contactos(contactos)
-
+    contactos = cargar_contactos(contactos)
+    mostrar_contactos(contactos)
     #TODO: Crear función para agregar un contacto. Debes tener en cuenta lo siguiente:
     # - El nombre y apellido no pueden ser una cadena vacía o solo espacios y se guardarán con la primera letra mayúscula y el resto minúsculas (ojo a los nombre compuestos)
     # - El email debe ser único en la lista de contactos, no puede ser una cadena vacía y debe contener el carácter @.
@@ -173,7 +231,7 @@ def main():
     # - De igual manera, aunque existan espacios entre el prefijo y los 9 números al introducirlo, debe almacenarse sin espacios.
     # - Por ejemplo, será posible introducir el número +34 600 100 100, pero guardará +34600100100 y cuando se muestren los contactos, el telófono se mostrará como +34-600100100. 
     #TODO: Realizar una llamada a la función agregar_contacto con todo lo necesario para que funcione correctamente.
-    agregar_contacto()
+    agregar_contacto(contactos)
 
     pulse_tecla_para_continuar()
     borrar_consola()
