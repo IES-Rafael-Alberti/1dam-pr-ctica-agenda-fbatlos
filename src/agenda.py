@@ -48,15 +48,17 @@ def cargar_contactos(contactos: list):
     with open(RUTA_FICHERO, 'r') as fichero:
         for linea in fichero:
             contactos = procesar_contacto(linea)
+            print(contactos)
             
 
 def procesar_contacto(linea:str):
-    linea.split(";")
-    linea.strip()
-    nombre_completo = f"{linea[0]} {linea[1]}"
-    correo = linea[2]
-    telefono = linea[3]
+    linea = linea.strip().split(";")
+    nombre_completo = f"Nombre : {linea[0]} {linea[1]}"
+    correo = f"Correo : {linea[2]}"
+    telefono = f"Telefonos : {linea[3:]}"
     return nombre_completo , correo , telefono
+
+
 def eliminar_contacto(contactos: list, email: str):
     """ Elimina un contacto de la agenda
     ...
@@ -124,7 +126,24 @@ def pedir_opcion():
         opcion = None
         return(opcion)
     
-    
+def agregar_contacto(contactos : list):
+    cont = None
+    while   cont == None:
+        try:
+            conjunto = list()
+            nombre = pedir_nombre()
+            email = pedir_email()
+            telefono = int (input("Dame tu teléfono : +34 "))
+            if len(telefono)!= 9 :
+                email
+            while telefono != " ":
+                email
+            contactos.append(conjunto)
+            cont=1
+        except ValueError as e:
+            print(e,"Teléfono incorrecto")
+
+
 def pulse_tecla_para_continuar():
     """ Muestra un mensaje y realiza una pausa hasta que se pulse una tecla
     """
