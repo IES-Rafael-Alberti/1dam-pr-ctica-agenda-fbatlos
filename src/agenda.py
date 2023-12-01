@@ -48,7 +48,7 @@ def cargar_contactos(contactos: list):
     with open(RUTA_FICHERO, 'r') as fichero:
         for linea in fichero:
             procesar_contacto(linea , contactos)     
-    return contactos
+    return ordenar(contactos)
     
 def procesar_contacto(linea:str , contactos:list):
     informacion_contactos = dict()
@@ -237,9 +237,12 @@ def validar_email(email : str,contactos):
     elif email in contactos:
         raise ValueError ("el email ya existe en la agenda")
 
+def obtener_nombre(contacto):
+    return contacto['nombre']
 
-
-
+def ordenar(contactos):
+    contactos = sorted(contactos, key=obtener_nombre)
+    return contactos
 
 def pedir_nombre():
     cont = None
@@ -276,7 +279,6 @@ def main():
     #TODO: Modificar la función cargar_contactos para que almacene todos los contactos del fichero en una lista con un diccionario por contacto (claves: nombre, apellido, email y telefonos)
     #TODO: Realizar una llamada a la función cargar_contacto con todo lo necesario para que funcione correctamente.
     contactos = cargar_contactos(contactos)
-    agenda(contactos)
     mostrar_contactos(contactos)
     #TODO: Crear función para agregar un contacto. Debes tener en cuenta lo siguiente:
     # - El nombre y apellido no pueden ser una cadena vacía o solo espacios y se guardarán con la primera letra mayúscula y el resto minúsculas (ojo a los nombre compuestos)
