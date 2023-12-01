@@ -122,7 +122,9 @@ def agenda(contactos: list):
             elif opcion == 5:
                 cargar_contactos(contactos)
             elif opcion == 6:
-                buscar_contacto(contactos)
+                email = input("Dime el email de la persona que desea buscar\n"
+                      "=> ")
+                print(buscar_contacto(contactos , email))
             elif opcion == 7:
                 mostrar_contactos(contactos)     
             
@@ -167,7 +169,7 @@ def pedir_opcion():
         return opcion
     except ValueError as e :
         print(e,"No es un número")
-        opcion = 0
+        opcion = -1
         return(opcion)
     
 def agregar_contacto(contactos : list):
