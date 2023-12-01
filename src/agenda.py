@@ -41,6 +41,23 @@ def borrar_consola():
 
 def cargar_contactos(contactos: list):
     """ Carga los contactos iniciales de la agenda desde un fichero
+    La funcion va a la ruta donde estan los contactos , las pasa a fichero , que se va recoriendo con la linea metiendose a su vez en procesar_contacto junto a los contactos.
+
+    Args:
+        linea (str): Recorre el fichero.
+         (tipo): Descripción del segundo parámetro.
+
+    Returns:
+        tipo_de_retorno: Descripción del tipo de valor que devuelve la función.
+
+    Raises:
+        TipoDeExcepcion: Descripción de cuándo y por qué podría generarse una excepción.
+
+    Examples:
+        Ejemplos de uso de la función para ilustrar su comportamiento.
+
+    Note:
+        Notas adicionales o información especial sobre la función.
     ...
     """
     #TODO: Controlar los posibles problemas derivados del uso de ficheros...
