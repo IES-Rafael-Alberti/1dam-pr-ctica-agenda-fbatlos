@@ -44,8 +44,6 @@ def cargar_contactos(contactos: list):
     La funcion va a la ruta donde estan los contactos , las pasa a fichero , que se va recoriendo con la linea metiendose a su vez en procesar_contacto junto a los contactos.
 
     Args:
-        fichero (TextIOWrapper) : trae los contactos de la ruta de fichero
-        linea (str): Recorre el fichero.
         contactos (list): Se guardará una lista de diccionarios creado en procesar_contactos().
 
     Returns:
@@ -64,14 +62,7 @@ def procesar_contacto(linea:str , contactos:list):
      que queremos y lo inplementamos a un diccionario y este lo añadiremos a la lista de contactos .
 
     Args:
-        linea (str): Recorre el fichero.
         contactos (list): Se guardará una lista de diccionarios creados.
-        informacion_contactos (dict) : Se guardaran los datos de nombre , apellido, email y telefono en el diccionario.
-        nombre (str) : Se guardará el nombre que seleccionamos en la lista de linea.
-        apellido (str) : Se guardará el apellido que seleccionamos en la lista de linea.
-        email (str) : guardará el email que seleccionamos en la lista de linea.
-        telefono (str) : guardará el telefono que seleccionamos en la lista de linea.
-        
 
     Returns:
         contactos (list): Una lista con cada diccionario de cada persona.
@@ -94,8 +85,7 @@ def mostrar_contactos(contactos : list):
 
     Args:
         contactos (list): Se guardará una lista de diccionarios creados.
-        i (dict) : Recorrerá la lista contactos convirtiendose en el diccionario de cada persona / revisará que el diccionario telefono no esté vacio. 
-
+    
     Returns:
         print : Imprime la agenda mencionando primero cuantos contactos hay y una linea que serará cada contacto.
 
@@ -120,9 +110,6 @@ def buscar_contacto(contactos , email):
 
     Args:
         contactos (list) : Lista que contiene cada diccionario de cada contacto .
-        contacto (dict) : Contiene el diccionario de cada persona . 
-        i (int) : Contador de las posiciones revidas .
-        pos (int) : Guardará la posición de i .
         email (str) : Tiene el email del contacto que queremos buscar .
         
     Returns:
@@ -145,7 +132,6 @@ def eliminar_contacto(contactos: list, email: str):
 
     Args:
         contactos (list) : Lista que contiene cada diccionario de cada contacto .
-        pos (int|None) : La posición de email dentro de contactos .
         email (str) : Tiene el email del contacto que queremos buscar .
     
     Returns:
@@ -176,9 +162,6 @@ def agenda(contactos: list):
 
     Args:
         contactos (list) : Lista que contiene cada diccionario de cada contacto .
-        opcion (int) : El numero de la opcion que queremos .
-        email (str) : Para algunas funciones necesitamos saber el email para localizar al contacto que quiera que se realice esa opcion.
-        OPCIONES_MENU (conjunto) : Tiene las opciones .
 
     Note:
         Lo que retorna será mencionado en la documentación de cada función.
@@ -225,13 +208,8 @@ def modificar_contacto(contactos , email):
     realizar y llamará a la función de pedir lo que el usuario quiera cambiar y se realizará el cambio en la posición
 
     Args:
-        pos(int) = La posición del contacto que hemos pedido buscar.
-        cambi (str) = Es la opción de que quiere cambiar .
         contactos (list) : Lista que contiene cada diccionario de cada contacto .
-        nombre (str) : Se guardará el nombre que seleccionamos en la lista de linea.
-        apellido (str) : Se guardará el apellido que seleccionamos en la lista de linea.
         email (str) : guardará el email que seleccionamos en la lista de linea.
-        telefono (str) : guardará el telefono que seleccionamos en la lista de linea.
 
     Note:
         No tiene returns ni excepciones ya que cada funcíon dentro de pedir_nobre,email y telefono lo tienen .
@@ -257,7 +235,10 @@ def modificar_contacto(contactos , email):
                        "=> ")
             
 def borrar_agenda(contactos):
-    """Elimina toda la agenda"""
+    """Elimina toda la agenda
+    Args:
+        contactos (list) : Lista que contiene cada diccionario de cada contacto .
+    """
     contactos.clear()
     return contactos
 
@@ -277,9 +258,6 @@ def mostrar_menu():
 def pedir_opcion():
     """Le pide al usuario la opcion que quiere realizar.
 
-    Args:
-        opcion (int) : Es el numero de la opcion.
-
     Returns:
         return (opcion : int) : Devuelve el numero de la opción.
 
@@ -296,6 +274,15 @@ def pedir_opcion():
         return(opcion)
     
 def agregar_contacto(contactos : list):
+    """Agregamos los parametros nombre , apellido , email y telefono a un diccionario como es informacion_contactos que tiene 
+    las keys que necesitamos y depues se las agregamos a contactos. 
+    
+    Args:
+        contactos (list) : Lista que almacenará cada contacto en diccionarios.
+
+    Note:
+        El .append añade los diccionarios a la lista.
+    """
     nombre , apellido = pedir_nombre()
     email = pedir_email(contactos)
     telefono = pedir_telefono()
@@ -303,18 +290,34 @@ def agregar_contacto(contactos : list):
     contactos.append(informacion_contactos)
 
 def validar_telefono(input_tel):
+    """Revisará el numero introducido para saber si es válido cumpliendo los parametros seleccionados.
+
+    Args:
+        input_tel (str) : Es el numero de telefono que le introducimos. 
+
+    Returns:
+        retunt (boolean) : Devuelve True si la validación sale bien y False si hay algun error.
+    """
     if input_tel == "":
         return False
     elif input_tel.find("+") != -1:
         if len(input_tel) == 12:
             return True 
         else:
-            raise ValueError("El telefono es invalido")
-    elif input_tel > 9 or input_tel<9:
+            return False
+    elif len(input_tel) > 9 or len(input_tel)<9:
         return False 
     return True 
 
 def pedir_telefono():
+    """Pedirá al usuario que introduzca su numero de telefono y posteriormente será validado en valida_telefono.
+
+    Raises:
+        ValueError : Si salta algún error de valor .
+
+    Returns:
+        retunt (telefonos : linea) : Devolverá los teloefonos para ser añadidos a la agenda .
+    """
     cont = None
     contador = 0
     telefonos = list()
@@ -329,12 +332,23 @@ def pedir_telefono():
                 input_tel="ninguno"
                 return input_tel
             if input_tel == "":
-                return input_tel     
+                return telefonos     
         except ValueError as e:
             contador -=1
             print(e)
 
 def pedir_email(contactos):
+    """Pedira el email lo mandará a validar y dependiendo de si es valido o no el contador cambiará su valor para finalizar. 
+    
+    Args:
+        contactos (list) : Lista que almacenará cada contacto en diccionarios.
+
+    Returns:
+        retunt (email : str) : retornará el email ya revidado y valido.
+
+    Note:
+        El ValueError saltará en validar_email.
+    """
     cont = None
     while cont == None:
         try:
@@ -346,7 +360,16 @@ def pedir_email(contactos):
         except ValueError as e:
             print(e)
 
-def validar_email(email : str,contactos): 
+def validar_email(email : str,contactos):
+    """Validará el gmail siempre y cuando consiga saltear cada parametro. 
+    
+    Args:
+        contactos (list) : Lista que almacenará cada contacto en diccionarios.
+
+    Raises:
+        ValueError : Saldrá dependiendo de cada parametro erroneo.
+
+    """ 
     if email.find("@") == -1:
             raise ValueError ("el email no es un correo válido.")
     elif email.find(".com") == -1 and email.find(".es") == -1:
@@ -360,13 +383,30 @@ def validar_email(email : str,contactos):
         raise ValueError ("el email ya existe en la agenda")
 
 def obtener_nombre(contacto):
+    """Va devolviendo el nombre"""
     return contacto['nombre']
 
 def ordenar(contactos):
+    """Ordenará contactos segun el nombre"""
     contactos = sorted(contactos, key=obtener_nombre)
     return contactos
 
 def pedir_nombre():
+    """Pedira el nombre lo validará y dependiendo de si es valido o no saltará un error. 
+    
+    Args:
+        contactos (list) : Lista que almacenará cada contacto en diccionarios.
+    
+    Raises:
+        ValueError : Siempre que el nombre o el apellido no sea valido .
+    
+    Returns:
+        retun (nombre : str) : Devuelve el nombre ingresado y validado .
+        return (apellido : str) : Devuelve el apellido igresado y validado.
+
+    Note:
+        .
+    """ 
     cont = None
     while cont == None:
         try:
