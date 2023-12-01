@@ -71,11 +71,13 @@ def mostrar_contactos(contactos : list):
               "............................")
         
 def buscar_contacto(contactos , email):
-    for i in range (len(contactos)):
-                for contacto in contactos:
-                    if contacto.get("correo") == email:
-                        pos = i
-                        return pos
+    i=-1
+    for contacto in contactos:
+        i +=1 
+        if contacto.get("correo") == email:
+            pos = i
+            return pos
+        
 def eliminar_contacto(contactos: list, email: str):
     """ Elimina un contacto de la agenda
     ...
@@ -98,29 +100,50 @@ def agenda(contactos: list):
     ...
     """
     #TODO: Crear un bucle para mostrar el menú y ejecutar las funciones necesarias según la opción seleccionada...
-
+    opcion=0
     while opcion != 8:
         mostrar_menu()
         opcion = pedir_opcion()
 
         #TODO: Se valorará que utilices la diferencia simétrica de conjuntos para comprobar que la opción es un número entero del 1 al 8
-        if opcion in OPCIONES_MENU^8 :
+        if opcion in OPCIONES_MENU ^ {8} :
             if opcion == 1:
                 agregar_contacto(contactos)
             elif opcion == 2:
-                modificar_contacto(contactos)
+                email = input("Dime el email de la persona que desea modificar\n"
+                      "=> ")
+                modificar_contacto(contactos , email)
             elif opcion == 3:
-                eliminar_contacto()
+                email = input("Dime el email de la persona que desea eliminar\n"
+                      "=> ")
+                eliminar_contacto(contactos , email)
             elif opcion == 4:
-                borrar_agenda()
+                borrar_agenda(contactos)
             elif opcion == 5:
-                cargar_contactos()
+                cargar_contactos(contactos)
             elif opcion == 6:
-                buscar_contacto()
+                buscar_contacto(contactos)
             elif opcion == 7:
-                mostrar_contactos()     
-            elif opcion == 8:
-                return None
+                mostrar_contactos(contactos)     
+            
+
+def modificar_contacto(contactos , email):
+    pos = buscar_contacto(contactos,email)
+    print("Que quieres cambiar ?")
+    cambio = input("n : nombre , e : email , t : telefono o enter si no desea modificar.\n"
+                       "=> ")
+    while cambio != "":
+        if cambio == "n":
+            nombre , apellido = pedir_nombre()
+            contactos[pos]['nombre'] = nombre
+            contactos[pos]['apellido'] = apellido
+             
+
+
+def borrar_agenda(contactos):
+    contactos.clear()
+    return contactos
+
 
 def mostrar_menu():
     print("AGENDA\n"
@@ -140,18 +163,30 @@ def pedir_opcion():
         return opcion
     except ValueError as e :
         print(e,"No es un número")
-        opcion = None
+        opcion = 0
         return(opcion)
     
 def agregar_contacto(contactos : list):
     nombre , apellido = pedir_nombre()
     email = pedir_email(contactos)
-    telefono = validar_telefono()
+    telefono = pedir_telefono()
     informacion_contactos ={'nombre':nombre , 'apellido':apellido , 'correo':email , 'telefono':telefono}
     contactos.append(informacion_contactos)
 
+def validar_telefono(input_tel):
+    if input_tel == "":
+        return False
+    elif input_tel.find("+") != -1:
+        if len(input_tel) == 12:
+            return True 
+        else:
+            raise ValueError("El telefono es invalido")
+    elif input_tel > 9 or input_tel<9:
+        return False 
+    return True 
 
-def validar_telefono():
+
+def pedir_telefono():
     cont = None
     contador = 0
     telefonos = list()
@@ -159,19 +194,18 @@ def validar_telefono():
         try:
             contador += 1
             input_tel = str(input(f"Dame tu teléfono nº {contador} => "))
+            validado= validar_telefono(input_tel)
+            if validado == True:
+                telefonos.append(input_tel)
+            if contador == 1 and input_tel == "":
+                input_tel="ninguno"
+                return input_tel
             if input_tel == "":
-                return telefonos
-            elif input_tel.find("+") != -1:
-                if len(input_tel) == 12:
-                    telefonos.append(input_tel)
-                else:
-                    raise ValueError("El telefono es invalido")
-            elif input_tel != 9:
-                raise ValueError("El telefono es invalido")
-            telefonos.append(input_tel)
-            cont = "Diego ponme un 15//2 plis"      
+                return input_tel     
         except ValueError as e:
+            contador -=1
             print(e)
+
 
 def pedir_email(contactos):
     cont = None
@@ -236,6 +270,7 @@ def main():
     #TODO: Modificar la función cargar_contactos para que almacene todos los contactos del fichero en una lista con un diccionario por contacto (claves: nombre, apellido, email y telefonos)
     #TODO: Realizar una llamada a la función cargar_contacto con todo lo necesario para que funcione correctamente.
     contactos = cargar_contactos(contactos)
+    agenda(contactos)
     mostrar_contactos(contactos)
     #TODO: Crear función para agregar un contacto. Debes tener en cuenta lo siguiente:
     # - El nombre y apellido no pueden ser una cadena vacía o solo espacios y se guardarán con la primera letra mayúscula y el resto minúsculas (ojo a los nombre compuestos)
@@ -297,7 +332,7 @@ def main():
     #
     #TODO: Para la opción 3, modificar un contacto, deberás desarrollar las funciones necesarias para actualizar la información de un contacto.
     #TODO: También deberás desarrollar la opción 6 que deberá preguntar por el criterio de búsqueda (nombre, apellido, email o telefono) y el valor a buscar para mostrar los contactos que encuentre en la agenda.
-    agenda()
+    agenda(contactos)
 
 
 if __name__ == "__main__":
