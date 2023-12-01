@@ -251,7 +251,8 @@ def validar_email(email : str,contactos):
         raise ValueError ("El email no está completo.")
     elif email == "":
         raise ValueError ("el email no puede ser una cadena vacía")
-    elif email in contactos:
+    encontrado = buscar_contacto(contactos,email)
+    if encontrado != None:
         raise ValueError ("el email ya existe en la agenda")
 
 def obtener_nombre(contacto):
