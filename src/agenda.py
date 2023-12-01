@@ -137,8 +137,12 @@ def modificar_contacto(contactos , email):
             nombre , apellido = pedir_nombre()
             contactos[pos]['nombre'] = nombre
             contactos[pos]['apellido'] = apellido
-             
-
+        elif cambio == "e":
+            email = pedir_email(contactos)
+            contactos[pos]['correo'] = email
+        elif cambio == "t":
+            telefono = pedir_telefono()
+            contactos[pos]['telefono']=telefono
 
 def borrar_agenda(contactos):
     contactos.clear()
