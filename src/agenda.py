@@ -95,16 +95,22 @@ def mostrar_contactos(contactos : list):
     borrar_consola()
     contactos = ordenar(contactos)
     print(f"AGENDA {len(contactos)}\n"
-          "-------------------")
+          "-------------------") 
     for i in contactos:
-        if i['telefono'] == []:
-            i['telefono'] = 'ninguno'
-    
+        if i['telefonos'] == []:
+            i['telefonos'] = 'ninguno'
     for i in contactos:
-        print(f"Nombre : {i['nombre']} {i['apellido']}    ({i['email']})",end="\n")
-        print(f"Teléfonos: {i['telefono']}\n"
+        if i["telefonos"] == 'ninguno':
+            print(f"Nombre : {i['nombre']} {i['apellido']}    ({i['email']})",end="\n")
+            print(f"Teléfonos: {i['telefonos']}\n"
               "............................")
-        
+        else:
+            print(f"Nombre : {i['nombre']} {i['apellido']}    ({i['email']})",end="\n")
+            print(f"Teléfonos: {" / ".join(i['telefonos'])}\n"
+                "............................")
+
+
+
 def buscar_contacto(contactos , email):
     """Se recorrerá la lista contactos buscando una posicion de un gmail anteriormente introducido.
 
@@ -223,12 +229,15 @@ def modificar_contacto(contactos , email):
             nombre , apellido = pedir_nombre()
             contactos[pos]['nombre'] = nombre
             contactos[pos]['apellido'] = apellido
+            cambio = ""
         elif cambio == "e":
             email = pedir_email(contactos)
             contactos[pos]['email'] = email
+            cambio = ""
         elif cambio == "t":
             telefono = pedir_telefono()
             contactos[pos]['telefono']=telefono
+            cambio = ""
         else:
             print("No es una de las opciones.")
             cambio = input("n : nombre , e : email , t : telefono o enter si no desea modificar.\n"
@@ -286,7 +295,7 @@ def agregar_contacto(contactos : list):
     nombre , apellido = pedir_nombre()
     email = pedir_email(contactos)
     telefono = pedir_telefono()
-    informacion_contactos ={'nombre':nombre , 'apellido':apellido , 'correo':email , 'telefono':telefono}
+    informacion_contactos ={'nombre':nombre , 'apellido':apellido , 'email':email , 'telefonos':telefono}
     contactos.append(informacion_contactos)
 
 def validar_telefono(input_tel):
@@ -365,8 +374,6 @@ def pedir_email(contactos):
         validar_email(email,contactos)
         return email
         
-        
-
 def validar_email(email : str,contactos):
     """Validará el gmail siempre y cuando consiga saltear cada parametro. 
     
