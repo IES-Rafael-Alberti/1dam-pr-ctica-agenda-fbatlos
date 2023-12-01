@@ -55,7 +55,7 @@ def cargar_contactos(contactos: list):
     with open(RUTA_FICHERO, 'r') as fichero:
         for linea in fichero:
             procesar_contacto(linea , contactos)     
-    return contactos
+    
     
 def procesar_contacto(linea:str , contactos:list):
     """Procesara cada linea del ficho antes mencionado , convertirá dicha linea en una lista , despues seleccionaremos de la lista los datos 
@@ -77,7 +77,7 @@ def procesar_contacto(linea:str , contactos:list):
     apellido = linea[1]
     email = linea[2]
     telefono = linea[3:]
-    informacion_contactos ={'nombre':nombre , 'apellido':apellido , 'correo':email , 'telefono':telefono}
+    informacion_contactos ={"nombre": nombre ,"apellido": apellido , "email": email, "telefonos": telefono}
     contactos.append(informacion_contactos)
     
 def mostrar_contactos(contactos : list):
@@ -101,7 +101,7 @@ def mostrar_contactos(contactos : list):
             i['telefono'] = 'ninguno'
     
     for i in contactos:
-        print(f"Nombre : {i['nombre']} {i['apellido']}    ({i['correo']})",end="\n")
+        print(f"Nombre : {i['nombre']} {i['apellido']}    ({i['email']})",end="\n")
         print(f"Teléfonos: {i['telefono']}\n"
               "............................")
         
@@ -121,7 +121,7 @@ def buscar_contacto(contactos , email):
     i=-1
     for contacto in contactos:
         i +=1 
-        if contacto.get("correo") == email:
+        if contacto.get("email") == email:
             pos = i
             return pos
         
@@ -225,7 +225,7 @@ def modificar_contacto(contactos , email):
             contactos[pos]['apellido'] = apellido
         elif cambio == "e":
             email = pedir_email(contactos)
-            contactos[pos]['correo'] = email
+            contactos[pos]['email'] = email
         elif cambio == "t":
             telefono = pedir_telefono()
             contactos[pos]['telefono']=telefono
@@ -301,8 +301,8 @@ def validar_telefono(input_tel):
     if input_tel == "":
         return False
     elif input_tel.find("+") != -1:
-        if len(input_tel) == 12:
-            return True 
+        if len(input_tel) == 12 and input_tel[2] == "4":
+            return True
         else:
             return False
     elif len(input_tel) > 9 or len(input_tel)<9:
@@ -351,14 +351,21 @@ def pedir_email(contactos):
     """
     cont = None
     while cont == None:
-        try:
-            email = input("Dime tu email => ")
-            validar_email(email,contactos)
-            cont = "Diego ponme un 15//2 plis"
-            return email
+        email = input("Dime tu email => ")
+        if email == "":
+            raise ValueError ("el email no puede ser una cadena vacía")
+        elif 0<len(email)<9:
+            raise ValueError ("El email no está completo.")
+        elif email.find("@") == -1:
+            raise ValueError ("el email no es un correo válido.")
+        encontrado = buscar_contacto(contactos,email)
+        if encontrado != None:
+            raise ValueError ("el email ya existe en la agenda")
+        cont = "Diego ponme un 15//2 plis"
+        validar_email(email,contactos)
+        return email
         
-        except ValueError as e:
-            print(e)
+        
 
 def validar_email(email : str,contactos):
     """Validará el gmail siempre y cuando consiga saltear cada parametro. 
@@ -369,15 +376,13 @@ def validar_email(email : str,contactos):
     Raises:
         ValueError : Saldrá dependiendo de cada parametro erroneo.
 
-    """ 
-    if email.find("@") == -1:
-            raise ValueError ("el email no es un correo válido.")
-    elif email.find(".com") == -1 and email.find(".es") == -1:
-        raise ValueError ("Email no encontrado en dominio : .es o .com .")
+    """  
+    if email == "":
+            raise ValueError ("el email no puede ser una cadena vacía")
     elif 0<len(email)<9:
         raise ValueError ("El email no está completo.")
-    elif email == "":
-        raise ValueError ("el email no puede ser una cadena vacía")
+    elif email.find("@") == -1:
+        raise ValueError ("el email no es un correo válido.")
     encontrado = buscar_contacto(contactos,email)
     if encontrado != None:
         raise ValueError ("el email ya existe en la agenda")
@@ -437,7 +442,7 @@ def main():
     contactos = list()
     #TODO: Modificar la función cargar_contactos para que almacene todos los contactos del fichero en una lista con un diccionario por contacto (claves: nombre, apellido, email y telefonos)
     #TODO: Realizar una llamada a la función cargar_contacto con todo lo necesario para que funcione correctamente.
-    contactos = cargar_contactos(contactos)
+    cargar_contactos(contactos)
     #TODO: Crear función para agregar un contacto. Debes tener en cuenta lo siguiente:
     # - El nombre y apellido no pueden ser una cadena vacía o solo espacios y se guardarán con la primera letra mayúscula y el resto minúsculas (ojo a los nombre compuestos)
     # - El email debe ser único en la lista de contactos, no puede ser una cadena vacía y debe contener el carácter @.
